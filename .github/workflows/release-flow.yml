@@ -20,10 +20,11 @@ jobs:
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
       - name: Build app-ziti-console
         run: |
+          release_name="${{ github.event.release.name }}"
           if [[ release_name =~ ^app-ziti-console-v([0-9]+\.)+[0-9]+$ ]]; then
-            echo "String matches the pattern."
+            echo "${release_name} -- String matches the pattern."
           else
-            echo "String does not match the pattern."
+            echo "${release_name} -- String does __NOT__ match the pattern."
           fi
 #      - name: Build zip for use with controller
 #        run: ./build.sh /zac/
