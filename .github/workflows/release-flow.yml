@@ -18,24 +18,14 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - name: Set VERSION Environment Variable
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-      - name: Build app-ziti-console
+      - name: build and upload ziti-console.zip as SPA for use with controller
         if: startsWith(github.event.release.name, 'app-ziti-console-v')
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
         run: |
-            echo "${{ github.event.release.name }} -- String matches the pattern."
-      - name: Build ziti-console-lib
+          ./build.sh /zac/
+          cd dist/app-ziti-console && zip -r ziti-console.zip *
+          gh release upload ${{github.event.release.tag_name}} ziti-console.zip
+      - name: Build and Publish Shared Library - ziti-console-lib
         if: startsWith(github.event.release.name, 'ziti-console-lib-v')
-        run: |
-          echo "${{ github.event.release.name }} -- String matches the pattern."
-          
-#      - name: Build zip for use with controller
-#        run: ./build.sh /zac/
-#      - name: upload ziti-console.zip as SPA for use with controller
-#        run: |
-#          cd dist/app-ziti-console && zip -r ziti-console.zip *
-#          gh release upload ${{github.event.release.tag_name}} ziti-console.zip
-#        env:
-#          GITHUB_TOKEN: ${{ github.TOKEN }}
-#
-#      - name: Check if 'publish-shared-lib' is present
-#        run: echo "Label 'publish-shared-lib' is present"
-#        if: contains(github.event.pull_request.labels.*.name, 'publish-shared-lib')
+        run: ./publishSharedLib.sh /zac/
