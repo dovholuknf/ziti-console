@@ -41,7 +41,7 @@ jobs:
         run: echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
       - name: Set VERSION Environment Variable
         run: |
-          VERSION=$(echo "${{ github.event.release.name }}" | grep -oP '^-v(.*)$')
+          VERSION=$(echo "${{ github.event.release.name }}" | grep -oP '^.*-v(.*)$')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: Build and Publish Shared Library - ziti-console-lib
         run: ./publishSharedLib.sh
